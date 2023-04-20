@@ -27,32 +27,47 @@ class OplogKeepAwake {
       );
     }
 
-    const keepAwakeCollection = new Mongo.Collection(
-      packageSettings?.keepAwakeCollectionName
+    console.log(
+      `kolyasya:oplog-keep-awake | Establishing connection to ${packageSettings?.keepAwakeCollectionName} Mongo DB Collection...`
     );
 
-    SyncedCron.add({
-      name: `kolyasya:oplog-keep-awake | Upsert new entry to "${packageSettings?.keepAwakeCollectionName}" Mongo DB Collection each ${defaultSettings?.keepAwakeUpsertIntervalSeconds} seconds`,
-      schedule(parser) {
-        return parser
-          .recur()
-          .every(packageSettings.keepAwakeUpsertIntervalSeconds)
-          .second();
-      },
-      job() {
-        keepAwakeCollection.upsert(
-          { _id: 'keepAwake' },
-          { $set: { updatedAt: new Date() } }
-        );
-      },
-      log: false,
-    });
+    try {
+      const keepAwakeCollection = new Mongo.Collection(
+        packageSettings?.keepAwakeCollectionName
+      );
+
+      SyncedCron.add({
+        name: `kolyasya:oplog-keep-awake | Upsert new entry to "${packageSettings?.keepAwakeCollectionName}" Mongo DB Collection each ${defaultSettings?.keepAwakeUpsertIntervalSeconds} seconds`,
+        schedule(parser) {
+          return parser
+            .recur()
+            .every(packageSettings.keepAwakeUpsertIntervalSeconds)
+            .second();
+        },
+        job() {
+          keepAwakeCollection.upsert(
+            { _id: 'keepAwake' },
+            { $set: { updatedAt: new Date() } }
+          );
+        },
+        log: false,
+      });
+    } catch (error) {
+      console.error(
+        `kolyasya:oplog-keep-awake | Something went wrong during kolyasya:oplog-keep-awake initiation`,
+        error
+      );
+    }
   }
 }
 
 const initOplogKeepAwake = () => {
   if (!instance) {
     instance = new OplogKeepAwake();
+  } else {
+    console.warn(
+      `kolyasya:oplog-keep-awake | Seems like you are trying to init package for a second time. You don't need to do this. Check related functions`
+    );
   }
 
   return instance;
