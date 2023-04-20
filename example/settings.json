@@ -1,0 +1,9 @@
+{
+  "name": "example",
+  "packages": {
+    "kolyasya:oplog-keep-awake": {
+      "keepAwakeCollectionName": "keepAwake",
+      "keepAwakeUpsertIntervalSeconds": 120
+    }
+  }
+}
