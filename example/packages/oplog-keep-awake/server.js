@@ -1,6 +1,8 @@
 import { Meteor } from 'meteor/meteor';
 import { Mongo } from 'meteor/mongo';
 
+import prepareProperSchedule from './utils/prepareProperSchedule';
+
 const defaultSettings = {
   keepAwakeCollectionName: 'keepAwake',
   keepAwakeUpsertIntervalSeconds: 120,
@@ -37,12 +39,12 @@ class OplogKeepAwake {
       );
 
       SyncedCron.add({
-        name: `kolyasya:oplog-keep-awake | Upsert new entry to "${packageSettings?.keepAwakeCollectionName}" Mongo DB Collection each ${defaultSettings?.keepAwakeUpsertIntervalSeconds} seconds`,
+        name: `kolyasya:oplog-keep-awake | Upsert new entry to "${packageSettings?.keepAwakeCollectionName}" Mongo DB Collection each ${packageSettings?.keepAwakeUpsertIntervalSeconds} seconds`,
         schedule(parser) {
-          return parser
-            .recur()
-            .every(packageSettings.keepAwakeUpsertIntervalSeconds)
-            .second();
+          return prepareProperSchedule({
+            intervalSeconds: packageSettings.keepAwakeUpsertIntervalSeconds,
+            parser,
+          });
         },
         job() {
           keepAwakeCollection.upsert(
