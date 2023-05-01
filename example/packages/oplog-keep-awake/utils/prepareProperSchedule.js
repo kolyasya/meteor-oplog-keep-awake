@@ -10,14 +10,12 @@ const prepareProperSchedule = ({ intervalSeconds = 60, parser }) => {
   if (intervalSeconds <= 3600) {
     const intervalMinutes = Math.round(intervalSeconds / 60);
 
-    console.log({ intervalMinutes });
-
     return parser.recur().every(intervalMinutes).minute();
   }
 
   // Hours
   const intervalHours = Math.round(intervalSeconds / 3600);
-  console.log({ intervalHours });
+
   return parser.recur().every(intervalHours).hour();
 };
 
