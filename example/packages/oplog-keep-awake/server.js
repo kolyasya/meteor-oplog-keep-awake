@@ -5,7 +5,7 @@ import prepareProperSchedule from './utils/prepareProperSchedule';
 
 const defaultSettings = {
   keepAwakeCollectionName: 'keepAwake',
-  keepAwakeUpsertIntervalSeconds: 120,
+  keepAwakeUpsertIntervalSeconds: 10,
 };
 
 const packageSettings = {
