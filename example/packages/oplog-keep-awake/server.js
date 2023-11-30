@@ -37,9 +37,11 @@ class OplogKeepAwake {
       const keepAwakeCollection = new Mongo.Collection(
         packageSettings?.keepAwakeCollectionName
       );
+      const cronHistoryCollection = SyncedCron._collection;
 
+      const cronOperationName = `kolyasya:oplog-keep-awake | Upsert new entry to "${packageSettings?.keepAwakeCollectionName}" Mongo DB Collection each ${packageSettings?.keepAwakeUpsertIntervalSeconds} seconds`;
       SyncedCron.add({
-        name: `kolyasya:oplog-keep-awake | Upsert new entry to "${packageSettings?.keepAwakeCollectionName}" Mongo DB Collection each ${packageSettings?.keepAwakeUpsertIntervalSeconds} seconds`,
+        name: cronOperationName,
         schedule(parser) {
           return prepareProperSchedule({
             intervalSeconds: packageSettings.keepAwakeUpsertIntervalSeconds,
@@ -47,6 +49,11 @@ class OplogKeepAwake {
           });
         },
         job() {
+          cronHistoryCollection.remove({ 
+            name: cronOperationName, 
+            finishedAt: { $lte: new Date(new Date() - packageSettings?.keepAwakeUpsertIntervalSeconds * 1000) }
+          })
+
           keepAwakeCollection.upsert(
             { _id: 'keepAwake' },
             { $set: { updatedAt: new Date() } }
