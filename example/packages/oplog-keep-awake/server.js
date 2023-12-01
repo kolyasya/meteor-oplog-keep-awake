@@ -5,7 +5,7 @@ import prepareProperSchedule from './utils/prepareProperSchedule';
 
 const defaultSettings = {
   keepAwakeCollectionName: 'keepAwake',
-  keepAwakeUpsertIntervalSeconds: 10,
+  keepAwakeUpsertIntervalSeconds: 120,
 };
 
 const packageSettings = {
@@ -51,7 +51,7 @@ class OplogKeepAwake {
         job() {
           cronHistoryCollection.remove({ 
             name: cronOperationName, 
-            finishedAt: { $lte: new Date(new Date() - packageSettings?.keepAwakeUpsertIntervalSeconds * 1000) }
+            finishedAt: { $lte: new Date(new Date() - packageSettings?.keepAwakeUpsertIntervalSeconds * 1000) } // Delete old package logs from cron history(from current time we subtract cron interval in ms)
           })
 
           keepAwakeCollection.upsert(
