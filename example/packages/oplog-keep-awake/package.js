@@ -1,7 +1,7 @@
 Package.describe({
   name: 'kolyasya:oplog-keep-awake',
   version: '0.0.4',
-  summary: 'Upserts new entry in keepAwake collection to keep oplog tailable',
+  summary: 'Upserts a new entry into keepAwake collection to keep an oplog tailable',
   git: 'https://github.com/kolyasya/meteor-oplog-keep-awake',
   documentation: '../../../README.md',
 });

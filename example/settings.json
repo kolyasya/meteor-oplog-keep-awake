@@ -3,7 +3,7 @@
   "packages": {
     "kolyasya:oplog-keep-awake": {
       "keepAwakeCollectionName": "keepAwake",
-      "keepAwakeUpsertIntervalSeconds": 120
+      "keepAwakeUpsertIntervalSeconds": 5
     }
   }
 }
