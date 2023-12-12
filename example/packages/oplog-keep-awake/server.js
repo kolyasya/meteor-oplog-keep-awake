@@ -39,6 +39,10 @@ class OplogKeepAwake {
       );
       const cronHistoryCollection = SyncedCron._collection;
 
+      if (!cronHistoryCollection) {
+        console.error(`Can't find CRON collection in DB`);
+      }
+
       SyncedCron.add({
         name: `kolyasya:oplog-keep-awake | Upsert new entry to "${packageSettings?.keepAwakeCollectionName}" Mongo DB Collection each ${packageSettings?.keepAwakeUpsertIntervalSeconds} seconds`,
         schedule(parser) {
@@ -50,7 +54,7 @@ class OplogKeepAwake {
         job() {
           // Delete old package logs from cron history
           // (from current time we subtract CRON interval in ms)
-          cronHistoryCollection.remove({
+          cronHistoryCollection?.remove({
             name: { $regex: /kolyasya:oplog-keep-awake/ },
             finishedAt: {
               $lte: new Date(
