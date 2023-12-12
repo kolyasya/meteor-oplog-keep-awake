@@ -48,11 +48,17 @@ class OplogKeepAwake {
           });
         },
         job() {
-          // Delete old package logs from cron history(from current time we subtract cron interval in ms)
-          cronHistoryCollection.remove({ 
-            name: { $regex: /kolyasya:oplog-keep-awake/ }, 
-            finishedAt: { $lte: new Date(new Date() - packageSettings?.keepAwakeUpsertIntervalSeconds * 1000) } 
-          })
+          // Delete old package logs from cron history
+          // (from current time we subtract CRON interval in ms)
+          cronHistoryCollection.remove({
+            name: { $regex: /kolyasya:oplog-keep-awake/ },
+            finishedAt: {
+              $lte: new Date(
+                Date.now() -
+                  packageSettings?.keepAwakeUpsertIntervalSeconds * 1000
+              ),
+            },
+          });
 
           keepAwakeCollection.upsert(
             { _id: 'keepAwake' },
