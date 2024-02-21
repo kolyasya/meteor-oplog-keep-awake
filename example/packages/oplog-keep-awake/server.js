@@ -46,7 +46,7 @@ class OplogKeepAwake {
             parser,
           });
         },
-        job() {
+        async job() {
           const cronHistoryCollection = SyncedCron._collection;
 
           if (!cronHistoryCollection) {
@@ -54,7 +54,7 @@ class OplogKeepAwake {
           } else {
             // Delete old package logs from cron history
             // (from current time we subtract CRON interval in ms)
-            cronHistoryCollection?.remove({
+            await cronHistoryCollection?.removeAsync({
               name: { $regex: /kolyasya:oplog-keep-awake/ },
               finishedAt: {
                 $lte: new Date(
@@ -65,7 +65,7 @@ class OplogKeepAwake {
             });
           }
 
-          keepAwakeCollection.upsert(
+          await keepAwakeCollection.upsertAsync(
             { _id: 'keepAwake' },
             { $set: { updatedAt: new Date() } }
           );
