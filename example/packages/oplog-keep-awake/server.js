@@ -1,16 +1,16 @@
-import { Meteor } from "meteor/meteor";
-import { Mongo } from "meteor/mongo";
+import { Meteor } from 'meteor/meteor';
+import { Mongo } from 'meteor/mongo';
 
-import prepareProperSchedule from "./utils/prepareProperSchedule";
+import prepareProperSchedule from './utils/prepareProperSchedule';
 
 const defaultSettings = {
-  keepAwakeCollectionName: "keepAwake",
+  keepAwakeCollectionName: 'keepAwake',
   keepAwakeUpsertIntervalSeconds: 120,
 };
 
 const packageSettings = {
   ...defaultSettings,
-  ...(Meteor.settings?.packages?.["kolyasya:oplog-keep-awake"] || {}),
+  ...(Meteor.settings?.packages?.['kolyasya:oplog-keep-awake'] || {}),
 };
 
 let instance;
@@ -19,13 +19,13 @@ class OplogKeepAwake {
   constructor(config = {}) {
     if (packageSettings?.keepAwakeCollectionName?.length < 2) {
       throw new Meteor.Error(
-        "kolyasya:oplog-keep-awake | You need to specify a proper Mongo collection name for keepAwake collection"
+        'kolyasya:oplog-keep-awake | You need to specify a proper Mongo collection name for keepAwake collection'
       );
     }
 
     if (packageSettings.keepAwakeUpsertIntervalSeconds < 1) {
       throw new Meteor.Error(
-        "kolyasya:oplog-keep-awake | Please specify keepAwake keepAwakeUpsertIntervalSeconds > 1000"
+        'kolyasya:oplog-keep-awake | Please specify keepAwake keepAwakeUpsertIntervalSeconds > 1000'
       );
     }
 
@@ -70,7 +70,7 @@ class OplogKeepAwake {
           }
 
           await keepAwakeCollection.upsertAsync(
-            { _id: "keepAwake" },
+            { _id: 'keepAwake' },
             { $set: { updatedAt: new Date() } }
           );
         },
@@ -117,7 +117,7 @@ class OplogKeepAwake {
 
 /**
  * Root function, starts Synced Cron
- * @param {Config} config 
+ * @param {Config} config
  */
 const initOplogKeepAwake = (config) => {
   if (!instance) {
