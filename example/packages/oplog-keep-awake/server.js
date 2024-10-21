@@ -16,7 +16,7 @@ const packageSettings = {
 let instance;
 
 class OplogKeepAwake {
-  constructor(config = {}) {
+  constructor() {
     if (packageSettings?.keepAwakeCollectionName?.length < 2) {
       throw new Meteor.Error(
         'kolyasya:oplog-keep-awake | You need to specify a proper Mongo collection name for keepAwake collection'
@@ -34,8 +34,6 @@ class OplogKeepAwake {
     );
 
     try {
-      SyncedCron.config(config);
-
       const keepAwakeCollection = new Mongo.Collection(
         packageSettings?.keepAwakeCollectionName
       );
@@ -85,43 +83,10 @@ class OplogKeepAwake {
   }
 }
 
-/**
- * @typedef {Object} LogMessage
- * @property {string} level - 'info', 'error', 'warn', 'debug'
- * @property {string} message
- * @property {string} tag
- */
 
-/**
- * @callback logger
- * @param {LogMessage} logMessage
- * @returns {void}
- */
-
-/**
- * @typedef {Object} Config
- * @property {boolean} log - Log job run details to console
- * @property {?logger} logger - Use a custom logger function (defaults to Meteor's logging package)
- * @property {string} collectionName - Name of collection to use for synchronisation and logging
- * @property {boolean} utc - Default to using localTime
- * @property {number} collectionTTL -  TTL in seconds for history records in collection to expire
-     NOTE: Unset to remove expiry but ensure you remove the index from
-     mongo by hand
-
-     ALSO: SyncedCron can't use the `_ensureIndex` command to modify
-     the TTL index. The best way to modify the default value of
-     `collectionTTL` is to remove the index by hand (in the mongo shell
-     run `db.cronHistory.dropIndex({startedAt: 1})`) and re-run your
-     project. SyncedCron will recreate the index with the updated TTL.
- */
-
-/**
- * Root function, starts Synced Cron
- * @param {Config} config
- */
-const initOplogKeepAwake = (config) => {
+const initOplogKeepAwake = () => {
   if (!instance) {
-    instance = new OplogKeepAwake(config);
+    instance = new OplogKeepAwake();
   } else {
     console.warn(
       `kolyasya:oplog-keep-awake | Seems like you are trying to init package for a second time. You don't need to do this. Check related functions`
