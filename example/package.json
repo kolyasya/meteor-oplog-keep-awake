@@ -2,7 +2,7 @@
   "name": "example",
   "private": true,
   "scripts": {
-    "start": "meteor npm install; meteor --settings ./settings.json --exclude-archs web.browser.legacy,web.cordova"
+    "start": "meteor npm install; meteor --settings ./settings.json --exclude-archs web.browser.legacy,web.cordova --port 4600"
   },
   "dependencies": {
     "@babel/runtime": "^7.20.7",
